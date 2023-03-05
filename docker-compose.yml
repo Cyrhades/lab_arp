@@ -1,0 +1,51 @@
+version: '3'
+services:
+    box1:
+        container_name: box1
+        image: "busybox"
+        entrypoint: /bin/sh
+        stdin_open: true
+        tty: true
+        networks:
+            my_arp_network:
+                ipv4_address: 172.20.0.11        
+    box2:
+        container_name: box2
+        image: "busybox"
+        entrypoint: /bin/sh
+        stdin_open: true
+        tty: true
+        networks:
+            my_arp_network:
+                ipv4_address: 172.20.0.12
+    arpspoofer:
+        container_name: arpspoofer
+        build: 
+            context: ressources/arpspoofer
+            args:
+                - http_proxy=${http_proxy}
+                - https_proxy=${https_proxy}
+        entrypoint: /bin/sh
+        stdin_open: true
+        tty: true
+        networks:
+            my_arp_network:
+                ipv4_address: 172.20.0.8
+    tcpdumper:
+        container_name: tcpdumper
+        build: 
+            context: ressources/arpspoofer
+            args:
+                - http_proxy=${http_proxy}
+                - https_proxy=${https_proxy}
+        entrypoint: /bin/sh
+        stdin_open: true
+        tty: true
+        networks:
+            my_arp_network:
+                ipv4_address: 172.20.0.9
+networks:
+  my_arp_network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
